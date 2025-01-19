@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tic Tac Toe</title>
+  <style>
+
+    body {
+      margin: 0;
+      font-family: sans-serif;
+    }
+
+    main {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      flex-direction: column;
+      font-size: 24px;
+    }
+
+    .game-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .board-container {
+      width: 450px;
+      display: grid;
+      grid-template: 150px 150px 150px / 150px 150px 150px;
+      border: 2px solid white;
+      border-radius: 3%;
+      overflow: hidden;
+      font-size: 90px;
+    }
+
+    .grid-cell {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 2px solid;
+      color: #91C891;
+      cursor: pointer;
+      transition: all ease-in-out 0.15s;
+    }
+
+    #reset-game {
+      height: 3rem;
+      background-color: #91C891;
+      border-radius: 5px;
+      color: white;
+      font-size: 1rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      cursor: pointer;
+      border: 2px solid #91C891;
+      transition: all ease-in-out 0.15s;
+    }
+
+    #reset-game:hover {
+      background-color: white;
+      color: #91C891;
+    }
+
+    .winner {
+      background-color: #91C891;
+      border-color: #91C891;
+      color: white;
+    }
+
+    .winner-notification,
+    .statistics {
+      height: 3rem;
+      justify-content: space-evenly;
+      text-align: center;
+      border-radius: 5px;
+      padding: 0 1rem;
+    }
+
+    .statistics {
+      font-size: 1.25rem;
+      font-weight: bold;
+      background-color: #91C891;
+      color: white;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+
+    .grid-cell:nth-of-type(1),
+    .grid-cell:nth-of-type(4),
+    .grid-cell:nth-of-type(7) { border-left: none }
+
+    .grid-cell:nth-of-type(1),
+    .grid-cell:nth-of-type(2),
+    .grid-cell:nth-of-type(3) { border-top: none;}
+
+    .grid-cell:nth-of-type(3),
+    .grid-cell:nth-of-type(6),
+    .grid-cell:nth-of-type(9) { border-right: none }
+
+    .grid-cell:nth-of-type(7),
+    .grid-cell:nth-of-type(8),
+    .grid-cell:nth-of-type(9) { border-bottom: none;}
+
+    @media (prefers-color-scheme: dark) {
+      body {
+        background-color: #262626;
+      }
+
+      .board-container {
+        border-color: #262626;
+      }
+
+      .statistics {
+        color: #262626;
+      }
+
+      #reset-game {
+        color: #262626;
+      }
+
+      #reset-game:hover {
+        background-color: #262626;
+      }
+
+      .winner {
+        color: #262626;
+      }
+
+      .winner-notification {
+        color: white;
+      }
+    }
+
+  </style>
+</head>
+<body>
+<main>
+
+  <div class="game-container">
+
+    <div class="statistics">
+      <div class="wins-x"></div>
+      <div class="game-count"></div>
+      <div class="tie-count"></div>
+      <div class="wins-o"></div>
+    </div>
+
+    <div class="board-container">
+      <div class="grid-cell">
+        <div class="cell-content"></div>
+      </div>
+      <div class="grid-cell">
+        <div class="cell-content"></div>
+      </div>
+      <div class="grid-cell">
+        <div class="cell-content"></div>
+      </div>
+      <div class="grid-cell">
+        <div class="cell-content"></div>
+      </div>
+      <div class="grid-cell">
+        <div class="cell-content"></div>
+      </div>
+      <div class="grid-cell">
+        <div class="cell-content"></div>
+      </div>
+      <div class="grid-cell">
+        <div class="cell-content"></div>
+      </div>
+      <div class="grid-cell">
+        <div class="cell-content"></div>
+      </div>
+      <div class="grid-cell">
+        <div class="cell-content"></div>
+      </div>
+    </div>
+
+    <button type="button" id="reset-game">reset game</button>
+    <div class="winner-notification"></div>
+
+  </div>
+
+
+</main>
+
+<script>
+  const gridCells = document.querySelectorAll('.grid-cell');
+  const resetGameElement = document.getElementById('reset-game');
+  const winnerNotification = document.querySelector('.winner-notification');
+  let board = [];
+  let rows = 3;
+  let cols = 3;
+  let clickCount = 0;
+  let winsX = 0;
+  let winsO = 0;
+  let gameCount = 0;
+
+  function clearBoard() {
+    for (let i = 0; i < rows; i++) {
+      board[i] = [];
+      for (let j = 0; j < cols; j++) {
+        board[i][j] = '';
+      }
+    }
+  }
+
+  function getTic() {
+    if (gameCount % 2 === 0) {
+      if (clickCount % 2 === 0) {
+        return 'X';
+      } else {
+        return 'O';
+      }
+    } else {
+      if (clickCount % 2 === 0) {
+        return 'O';
+      } else {
+        return 'X';
+      }
+    }
+  }
+
+  function addTic(index, tic) {
+    switch(index) {
+      case 0:
+        board[0][0] = tic;
+        break;
+      case 1:
+        board[0][1] = tic;
+        break;
+      case 2:
+        board[0][2] = tic;
+        break;
+      case 3:
+        board[1][0] = tic;
+        break;
+      case 4:
+        board[1][1] = tic;
+        break;
+      case 5:
+        board[1][2] = tic;
+        break;
+      case 6:
+        board[2][0] = tic;
+        break;
+      case 7:
+        board[2][1] = tic;
+        break;
+      case 8:
+        board[2][2] = tic;
+        break;
+      default:
+        throw new Error(`Index ${index} is invalid`);
+    }
+  }
+
+  function checkForWinner(tic) {
+    let finished = false;
+    if (board[0][0] === tic && board[0][1] === tic && board[0][2] === tic) {
+      gridCells[0].classList.add('winner');
+      gridCells[1].classList.add('winner');
+      gridCells[2].classList.add('winner');
+      finished = true;
+    }
+    if (board[1][0] === tic && board[1][1] === tic && board[1][2] === tic) {
+      gridCells[3].classList.add('winner');
+      gridCells[4].classList.add('winner');
+      gridCells[5].classList.add('winner');
+      finished = true;
+    }
+    if (board[2][0] === tic && board[2][1] === tic && board[2][2] === tic) {
+      gridCells[6].classList.add('winner');
+      gridCells[7].classList.add('winner');
+      gridCells[8].classList.add('winner');
+      finished = true;
+    }
+    if (board[0][0] === tic && board[1][0] === tic && board[2][0] === tic) {
+      gridCells[0].classList.add('winner');
+      gridCells[3].classList.add('winner');
+      gridCells[6].classList.add('winner');
+      finished = true;
+    }
+    if (board[0][1] === tic && board[1][1] === tic && board[2][1] === tic) {
+      gridCells[1].classList.add('winner');
+      gridCells[4].classList.add('winner');
+      gridCells[7].classList.add('winner');
+      finished = true;
+    }
+    if (board[0][2] === tic && board[1][2] === tic && board[2][2] === tic) {
+      gridCells[2].classList.add('winner');
+      gridCells[5].classList.add('winner');
+      gridCells[8].classList.add('winner');
+      finished = true;
+    }
+    if (board[0][0] === tic && board[1][1] === tic && board[2][2] === tic) {
+      gridCells[0].classList.add('winner');
+      gridCells[4].classList.add('winner');
+      gridCells[8].classList.add('winner');
+      finished = true;
+    }
+    if (board[2][0] === tic && board[1][1] === tic && board[0][2] === tic) {
+      gridCells[2].classList.add('winner');
+      gridCells[4].classList.add('winner');
+      gridCells[6].classList.add('winner');
+      finished = true;
+    }
+    return finished;
+  }
+
+  function removeAllEventListeners() {
+    gridCells.forEach((cell) => {
+      cell.removeEventListener('click', handleClick);
+      cell.style.cursor = "default";
+    });
+  }
+
+  function updateStatistics() {
+    document.querySelector('.wins-x').innerHTML = `Wins X: ${winsX}`;
+    document.querySelector('.game-count').innerHTML = `Games: ${gameCount}`;
+    document.querySelector('.tie-count').innerHTML = `Ties: ${gameCount - winsX - winsO}`;
+    document.querySelector('.wins-o').innerHTML = `Wins O: ${winsO}`;
+  }
+
+  function handleClick(event) {
+    const cell = event.target;
+    const index = Array.from(gridCells).indexOf(cell);
+
+    let tic = getTic();
+    addTic(index, tic);
+    cell.innerHTML = tic;
+    cell.removeEventListener('click', handleClick);
+    clickCount++;
+
+    if (clickCount >= 5) {
+      let finished = checkForWinner(tic);
+      if (finished) {
+        if (tic === 'X') {
+          winsX++;
+        } else if (tic === 'O') {
+          winsO++;
+        }
+        winnerNotification.innerHTML = `Chicken dinner! 🥇 ${tic} has won!`
+        removeAllEventListeners();
+        gameCount++;
+        updateStatistics();
+      } else if (clickCount >= 9) {
+        winnerNotification.innerHTML = 'No chicken dinner!';
+        removeAllEventListeners();
+        gameCount++;
+        updateStatistics();
+      }
+    }
+  }
+
+  function resetGame() {
+    clearBoard();
+    gridCells.forEach((cell) => {
+      cell.innerHTML = '';
+      cell.addEventListener('click', handleClick);
+      cell.classList.remove('winner');
+      winnerNotification.innerHTML = '';
+      cell.style.cursor = "pointer";
+      clickCount = 0;
+    })
+  }
+
+  function removeBackground(element) {
+    element.style.removeProperty('background');
+  }
+
+  gridCells.forEach((cell) => {
+    cell.addEventListener('click', handleClick);
+  });
+
+  clearBoard();
+  updateStatistics();
+
+  resetGameElement.addEventListener('click', resetGame);
+
+  resetGameElement.addEventListener('mousedown', function() {
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      this.style.background = '#3a3a3a';
+    } else {
+      this.style.background = '#f6f6f6';
+    }
+  });
+
+  resetGameElement.addEventListener('mouseup', function() {
+    removeBackground(this);
+  });
+
+  resetGameElement.addEventListener('mouseout', function() {
+    removeBackground(this);
+  });
+
+</script>
+</body>
+</html>

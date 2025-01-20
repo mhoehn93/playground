@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Text On The Screen</title>
+  <style>
+
+    @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700');
+
+    body {
+      font-family: "Oswald", sans-serif;
+      margin: 0;
+    }
+
+    main {
+      background-color: #000067;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    .text-container {
+      position: absolute;
+    }
+
+    .final-word,
+    .phrases {
+      height: 90px;
+      color: white;
+      font-size: 4rem;
+      opacity: 1;
+    }
+
+    .final-word {
+      margin-bottom: -20px;
+      transition: all ease-in-out 2s;
+    }
+
+    .phrases {
+      margin-bottom: 200px;
+      transition: all ease-in-out 1s;
+    }
+
+    .hidden {
+      opacity: 0;
+    }
+
+  </style>
+</head>
+<body>
+
+<main>
+  <div class="text-container">
+    <div class="final-word"></div>
+    <div class="phrases"></div>
+  </div>
+</main>
+
+<script>
+
+  function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  async function scrollThroughPhrases(phrases) {
+
+    const finalWord = document.querySelector('.final-word');
+    finalWord.classList.add('hidden');
+
+    const text = document.querySelector('.phrases');
+    for (let phrase of phrases) {
+      text.classList.add('hidden');
+      await delay(1000);
+
+      text.innerHTML = phrase;
+      text.classList.remove('hidden');
+      await delay(1500);
+    }
+
+    await delay(500);
+    finalWord.innerHTML = 'Be';
+    finalWord.classList.remove('hidden');
+  }
+
+  async function displayText() {
+    const phrases = [ 'Focus', 'Your Mind.', 'Remove', 'Distractions.', 'Go F***', 'Yourself.' ];
+    await scrollThroughPhrases(phrases);
+  }
+
+  document.addEventListener('DOMContentLoaded', displayText);
+</script>
+
+</body>
+</html>

@@ -23,6 +23,8 @@
 
     .text-container {
       position: absolute;
+      transform: translateY(0);
+      transition: all ease-in-out 1s;
     }
 
     .final-word,
@@ -47,49 +49,74 @@
       opacity: 0;
     }
 
+    .moveUp-fadeOut {
+      opacity: 0;
+      transform: translateY(-150px);
+    }
+
+    .moveUp-fadeIn {
+      opacity: 0;
+      transform: translateY(150px);
+    }
+
   </style>
 </head>
 <body>
 
 <main>
-  <div class="text-container">
-    <div class="final-word"></div>
-    <div class="phrases"></div>
-  </div>
 </main>
 
 <script>
+
+  const mainElement = document.querySelector('main');
 
   function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
-  async function scrollThroughPhrases(phrases) {
+  async function displayIntro() {
+    const phrases = [ 'Focus', 'Your Mind.', 'Remove', 'Distractions.', 'Trust', 'Yourself.' ];
 
-    const finalWord = document.querySelector('.final-word');
-    finalWord.classList.add('hidden');
+    const textContainerElement = document.createElement('div');
+    textContainerElement.classList.add('text-container');
 
-    const text = document.querySelector('.phrases');
+    const finalWordElement = document.createElement('div');
+    finalWordElement.classList.add('final-word');
+
+    const phrasesElement = document.createElement('div');
+    phrasesElement.classList.add('phrases');
+
+    textContainerElement.appendChild(finalWordElement);
+    textContainerElement.appendChild(phrasesElement);
+    mainElement.appendChild(textContainerElement);
+
+    finalWordElement.classList.add('hidden');
     for (let phrase of phrases) {
-      text.classList.add('hidden');
+      phrasesElement.classList.add('hidden');
       await delay(1000);
 
-      text.innerHTML = phrase;
-      text.classList.remove('hidden');
+      phrasesElement.innerHTML = phrase;
+      phrasesElement.classList.remove('hidden');
       await delay(1500);
     }
 
     await delay(500);
-    finalWord.innerHTML = 'Be';
-    finalWord.classList.remove('hidden');
+
+    finalWordElement.innerHTML = 'Be';
+    finalWordElement.classList.remove('hidden');
+    await delay(3000);
+
+    textContainerElement.classList.add('moveUp-fadeOut');
+    await delay(1000);
+
+    textContainerElement.remove();
   }
 
-  async function displayText() {
-    const phrases = [ 'Focus', 'Your Mind.', 'Remove', 'Distractions.', 'Go F***', 'Yourself.' ];
-    await scrollThroughPhrases(phrases);
+  async function init() {
+    await displayIntro();
   }
 
-  document.addEventListener('DOMContentLoaded', displayText);
+  document.addEventListener('DOMContentLoaded', init);
 </script>
 
 </body>
